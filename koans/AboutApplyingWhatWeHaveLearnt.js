@@ -38,16 +38,9 @@ describe("About Applying What We Have Learnt", function() {
   it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
 
       var productsICanEat = [];
-
-      products = _.filter(products, function(pizzaz){ return !pizzaz.containsNuts; });
-
-      function notMushroom(topping){ return (topping != "mushrooms"); }
-
-      for(var i = 0; i < products.length; i++){
-        if (_(products[i].ingredients).all(notMushroom)){
-          productsICanEat.push(products[i].name);
-        }
-      }
+      function notMushroom(topping){ return topping != "mushrooms"; }
+      products = _.filter(products, function(pizzaz){ return (!pizzaz.containsNuts && _(pizzaz.ingredients).all(notMushroom)); });
+      _(products).forEach(function(pizza){ productsICanEat.push(pizza.name); });
 
       expect(productsICanEat.length).toBe(1);
   });
@@ -84,7 +77,7 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
@@ -92,7 +85,9 @@ describe("About Applying What We Have Learnt", function() {
 
     /* chain() together map(), flatten() and reduce() */
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    _(products).forEach(function(pizza){ _(pizza.ingredients).forEach(function(topping){ ingredientCount[topping] = (ingredientCount[topping] || 0) + 1 }) });
+
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
